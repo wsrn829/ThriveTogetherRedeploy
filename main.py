@@ -1,6 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,  HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from authenticator import authenticator
+# from authenticator import authenticator
 from messages.routers.messages import messages_router
 from accounts.routers import accounts
 from peers.routers import peers
@@ -11,14 +11,20 @@ import asyncpg
 
 app = FastAPI()
 
+MAX_CONNECTIONS = 20
+
 @app.on_event("startup")
 async def startup():
-    app.state.pool = await asyncpg.create_pool(
-        user = os.getenv("DATABASE_USER"),
-        password = os.getenv("DATABASE_PASSWORD"),
-        database = os.getenv("DATABASE_NAME"),
-        host = os.getenv("DATABASE_HOST"),
-    )
+    try:
+        app.state.pool = await asyncpg.create_pool(
+            user=os.getenv("DATABASE_USER"),
+            password=os.getenv("DATABASE_PASSWORD"),
+            database=os.getenv("DATABASE_NAME"),
+            host=os.getenv("DATABASE_HOST"),
+            max_size=MAX_CONNECTIONS
+        )
+    except asyncpg.exceptions.TooManyConnectionsError:
+        raise HTTPException(status_code=503, detail="Service Unavailable")
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -35,7 +41,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(authenticator.router)
+# app.include_router(authenticator.router)
 app.include_router(accounts.router)
 app.include_router(messages_router)
 app.include_router(matching.router)
