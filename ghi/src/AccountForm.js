@@ -10,7 +10,7 @@ const AccountForm = () => {
   const [gender, setGender] = useState("");
   const [pronouns, setPronouns] = useState("");
   const [email, setEmail] = useState("");
-  const { register } = useToken();
+  //   const { register } = useToken();
   const navigate = useNavigate();
 
   const handleRegistration = (e) => {
