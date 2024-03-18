@@ -14,10 +14,10 @@ app = FastAPI()
 @app.on_event("startup")
 async def startup():
     app.state.pool = await asyncpg.create_pool(
-        user = os.getenv("DATABASE_USER")
-        password = os.getenv("DATABASE_PASSWORD")
-        database = os.getenv("DATABASE_NAME")
-        host = os.getenv("DATABASE_HOST")
+        user = os.getenv("DATABASE_USER"),
+        password = os.getenv("DATABASE_PASSWORD"),
+        database = os.getenv("DATABASE_NAME"),
+        host = os.getenv("DATABASE_HOST"),
     )
 
 @app.on_event("shutdown")
