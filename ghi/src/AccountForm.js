@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useToken from "@galvanize-inc/jwtdown-for-react";
+// import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useNavigate } from "react-router-dom";
 
 const AccountForm = () => {
@@ -24,10 +24,41 @@ const AccountForm = () => {
       pronouns: pronouns,
       email: email,
     };
-    register(accountData, `${process.env.REACT_APP_API_HOST}/api/accounts`);
+
+    fetch(`${process.env.REACT_APP_API_HOST}/api/accounts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(accountData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     e.target.reset();
-    navigate("/login");
   };
+
+  //   const handleRegistration = (e) => {
+  //     e.preventDefault();
+  //     const accountData = {
+  //       username: username,
+  //       password: password,
+  //       name: name,
+  //       age: age,
+  //       gender: gender,
+  //       pronouns: pronouns,
+  //       email: email,
+  //     };
+  //     register(accountData, `${process.env.REACT_APP_API_HOST}/api/accounts`);
+  //     e.target.reset();
+  //     navigate("/login");
+  //   };
 
   return (
     <div className="content-container bg-text rounded-edges d-flex justify-content-center">
