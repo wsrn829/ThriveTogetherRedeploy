@@ -1,4 +1,4 @@
-from fastapi import FastAPI,  HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 # from authenticator import authenticator
 from messages.routers.messages import messages_router
